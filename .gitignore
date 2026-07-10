@@ -1,0 +1,6 @@
+*.html
+*.csv
+
+/.venv/
+/perfil/
+*_files/
