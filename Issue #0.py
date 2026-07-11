@@ -1,6 +1,8 @@
 import os
 from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
+# import pandas as pd
+# import sqlite3
 
 def historico(html):
     soup = BeautifulSoup(html, 'html.parser')
@@ -33,9 +35,6 @@ def historico(html):
             if href.startswith('/'):
                 href = base + href
             links.append(href)
-            
-        if len(links) == 20:
-            break     
     return links     
 
 def criadores(html):
@@ -90,6 +89,17 @@ def issue0():
             print("Delay de 10s antes de acessar o site")
             aba.wait_for_timeout(10000)            
             
+            tamanho = aba.evaluate("document.body.scrollHeight")
+            while True:
+                aba.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+                aba.wait_for_timeout(2000)
+                altura = aba.evaluate("document.body.scrollHeight")
+                
+                if altura == tamanho:
+                    break
+                
+                tamanho = altura
+                
             links = historico(aba.content())
             print(f"Foram extraídas {len(links)} edições, passando pra análise")
             
