@@ -52,18 +52,36 @@ def criadores(html):
             print(f'{nome:<20} | Id: {linkID}')  
     else:
         print("Seção personagens ausente")
+
+def generoera(html): 
+    soup = BeautifulSoup(html, 'html.parser')
+    
+    genero = ""
+    era = ""
+    
+    genres = soup.find('div', class_='col-lg-2 col-3', string=lambda t: t and 'Genres' in t)
+    if genres:
+        genero = genres.find_next_sibling('div').get_text(strip=True)
+            
+    comic_age = soup.find('div', class_='col-lg-2 col-3', string=lambda t: t and 'Comic Age' in t)
+    if comic_age:
+        era = comic_age.find_next_sibling('div').get_text(strip=True)
+            
+    print(f"Gênero: {genero} | Era: {era}")
     
 def testeLocal():
+    # arquivo = "Valadyne's Profile _ League of Comic Geeks.html"
     # arquivo = "Absolute Batman #22 Reviews.html"
-    arquivo = "Valadyne's Profile _ League of Comic Geeks.html"
+    arquivo = "Absolute Batman from DC Comics.html"
     print(f"Lendo arquivo de teste: {arquivo}")
     
     try:
         with open(arquivo, 'r', encoding='utf-8') as f:
             html = f.read()
         
+        # historico(html)
         # criadores(html)
-        historico(html)
+        generoera(html)
     except FileNotFoundError:
         print("arquivo nn encontrado, escreve direito")
     

@@ -6,4 +6,5 @@ outro.py
 
 /.venv/
 /perfil/
+/__pycache__/
 *_files/

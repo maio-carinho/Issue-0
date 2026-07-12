@@ -65,10 +65,31 @@ def criadores(html):
             
     except AttributeError:
          print("Erro: URL errada")
+
+def generoera(html):
+    soup = BeautifulSoup(html, 'html.parser')
+    
+    try:
+        genero = ""
+        era = ""
+        
+        genres = soup.find('div', class_='col-lg-2 col-3', string=lambda t: t and 'Genres' in t)
+        if genres:
+            genero = genres.find_next_sibling('div').get_text(strip=True)
+                
+        comic_age = soup.find('div', class_='col-lg-2 col-3', string=lambda t: t and 'Comic Age' in t)
+        if comic_age:
+            era = comic_age.find_next_sibling('div').get_text(strip=True)
+                
+        print(f"Gênero: {genero} | Era: {era}")
+    
+    except AttributeError:
+         print("Erro: URL errada")
     
 def testeWeb():
+    # url = "https://leagueofcomicgeeks.com/profile/valadyne/reading"
     # url = "https://leagueofcomicgeeks.com/comic/6863939/absolute-batman-22"
-    url = "https://leagueofcomicgeeks.com/profile/valadyne/reading"
+    url = "https://leagueofcomicgeeks.com/comics/series/178012/absolute-batman"
     print(f"Iniciando Playwright para acessar: {url}")
     
     perfil = os.path.join(os.getcwd(), "perfil")
@@ -109,8 +130,9 @@ def testeWeb():
             navegador.close()
     
     if html:
-        # criadores(html) 
-        historico(html)
+        # historico(html)
+        # criadores(html)
+        generoera(html)
 
 if __name__ == "__main__":
     testeWeb()
