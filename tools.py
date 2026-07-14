@@ -1,10 +1,11 @@
 import re
 from bs4 import BeautifulSoup
 
-from banco import  Leitura, Serie, Edicao, Criador, Personagem, EdicaoCriador
+from banco import *
 from datetime import date
 
 base = "https://leagueofcomicgeeks.com"
+sessao = Session()
 
 def historico(html):
     soup = BeautifulSoup(html, 'html.parser')
@@ -23,24 +24,23 @@ def historico(html):
             dia = issue.select_one('.day').get_text(strip=True)
             mes = issue.select_one('.month').get_text(strip=True)
             ano = issue.select_one('.year').get_text(strip=True)
-            print(f'-' * 50)
-            print(f'Data da leitura: {dia} de {mes} de {ano}')
-                    
-        titulo = issue.select_one('.title a').get_text(strip=True)
-        editora = issue.select_one('.date span.font-weight-bold').get_text(strip=True)
-        print(f'{titulo} | Editora: {editora}')
-        
+                        
         link = issue.select_one('.title a')
         if link:
             href = link.get('href', '')
             if href.startswith('/'):
                 href = base + href
-            links.append({
-                'url': href,
-                'dia': dia,
-                'mes': mes,
-                'ano': ano
-            })
+            busca = re.search(r'/comic(?:s)?/(\d+)', href)
+            if busca:
+                e_id = int(busca.group(1))
+                e = sessao.query(Edicao).filter_by(id=e_id).first()
+                if not e:
+                    links.append({
+                        'url': href,
+                        'dia': dia,
+                        'mes': mes,
+                        'ano': ano
+                    })
     return links     
 
 def leitura(edicao, dia, mes, ano):
@@ -56,7 +56,7 @@ def edicao(html):
     
     paginas = 0    
     numero = soup.select_one('.page-details h1').get_text(strip=True)
-    busca = re.search(r'(#\d+|Vol\.\s*\d+)', numero, re.IGNORECASE)
+    busca = re.search(r'(#\d+|Vol\.\s*\d+|HC|TP)', numero, re.IGNORECASE)
     if busca:
         numero = busca.group(1)
     else:

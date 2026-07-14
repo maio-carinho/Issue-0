@@ -2,20 +2,14 @@ import os
 import re
 from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
-
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from banco import  Leitura, Serie, Edicao, Criador, Personagem, EdicaoCriador
-from tools import historico, leitura, edicao, criador, personagem, serie, edicao_criador
+from banco import *
+from tools import *
 
 base = "https://leagueofcomicgeeks.com"
-engine = create_engine('sqlite:///banco.db')
-Session = sessionmaker(bind=engine)
+url = "https://leagueofcomicgeeks.com/profile/valadyne/reading"
+sessao = Session()
 
-def issue0():
-    url = "https://leagueofcomicgeeks.com/profile/valadyne/reading"
-    sessao = Session()
-    
+def scraper():
     perfil = os.path.join(os.getcwd(), "perfil")
     with sync_playwright() as p:
         print(f"Iniciando o Playwright")
@@ -60,8 +54,8 @@ def issue0():
                     atual = outraAba.content()
                     
                     ed_obj = edicao(atual)
-                    url = base + "/comic/"
-                    ed_obj.id = int(issue.split(url)[1].split("/")[0])
+                    ed_url = base + "/comic/"
+                    ed_obj.id = int(issue.split(ed_url)[1].split("/")[0])
                     e = sessao.query(Edicao).filter_by(id=ed_obj.id).first()
                     if not e:
                         sessao.add(ed_obj)
@@ -159,4 +153,4 @@ def issue0():
             navegador.close()
 
 if __name__ == "__main__":
-    issue0()
+    scraper()

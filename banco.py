@@ -1,7 +1,9 @@
 from sqlalchemy import create_engine, Column, Integer, String, Date, ForeignKey, Table
-from sqlalchemy.orm import declarative_base, relationship
+from sqlalchemy.orm import declarative_base, relationship, sessionmaker
 
 base = declarative_base()
+engine = create_engine('sqlite:///banco.db')
+Session = sessionmaker(bind=engine)
 
 EdicaoPersonagem = Table(
     'edicao_personagem',
