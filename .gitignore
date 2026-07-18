@@ -1,10 +1,5 @@
-*.html
-*.csv
-*.txt
 *.db
-outro.py
 
 /.venv/
 /perfil/
-/__pycache__/
-*_files/
+__pycache__/
