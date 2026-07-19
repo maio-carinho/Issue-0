@@ -2,6 +2,8 @@ from dataclasses import dataclass
 from datetime import date, timedelta
 from typing import Optional
 
+esse_ano = date.today().year
+
 @dataclass(frozen=True)
 class Periodo:
     inicio: Optional[date] = None
@@ -12,10 +14,22 @@ class Periodo:
         return cls(None, None)
     
     @classmethod
-    def mes(cls, ano: int, mes: int) -> "Periodo":
-        inicio = date(ano, mes, 1)
-        fim = date(ano, 12, 31) if mes == 12 else date(ano, mes + 1, 1) - timedelta(days=1)
+    def mes(cls, mes: int) -> "Periodo":
+        inicio = date(esse_ano, mes, 1)
+        fim = date(esse_ano, 12, 31) if mes == 12 else date(esse_ano, mes + 1, 1) - timedelta(days=1)
         return cls(inicio, fim)
+    
+    @classmethod
+    def trimestre(cls, mes: int) -> "Periodo":
+        inicio = date(esse_ano, mes, 1)
+        fim = date(esse_ano, 12, 31) if mes == 12 else date(esse_ano, mes + 3, 1) - timedelta(days=1)
+        return cls(inicio, fim)
+    
+    @classmethod
+    def semestre(cls, mes: int) -> "Periodo":
+        inicio = date(esse_ano, mes, 1)
+        fim = date(esse_ano, 12, 31) if mes == 12 else date(esse_ano, mes + 6, 1) - timedelta(days=1)
+        return cls(inicio, fim) 
     
     @classmethod
     def ano(cls, ano: int) -> "Periodo":

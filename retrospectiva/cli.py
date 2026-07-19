@@ -1,5 +1,5 @@
 import argparse
-from datetime import datetime
+from datetime import date, datetime
 
 from retrospectiva.banco.sessao import nova_sessao, criar
 from retrospectiva.analise.periodo import Periodo
@@ -17,6 +17,12 @@ def comando_coletar(args):
 def comando_analisar(args):
     if args.ano:
         periodo = Periodo.ano(args.ano)
+    elif args.mes:
+        periodo = Periodo.mes(args.mes)
+    elif args.trimestre:
+        periodo = Periodo.trimestre(args.trimestre)
+    elif args.semestre:
+        periodo = Periodo.semestre(args.semestre)
     elif args.dias:
         periodo = Periodo.dias(args.dias)
     elif args.inicio or args.fim:
@@ -33,15 +39,16 @@ def main():
     subparsers = parser.add_subparsers(dest="comando", required=True)
 
     p_coletar = subparsers.add_parser("coletar", help="Roda o scraper e atualiza o banco local")
-    p_coletar.add_argument("--limite", type=int,
-                        help="Processa no máximo N edições novas nesta execução")
+    p_coletar.add_argument("--limite", type=int, help="Limita até N° edições novas processasdas")
 
     p_analisar = subparsers.add_parser("analisar", help="Gera a retrospectiva")
-    p_analisar.add_argument("--ano", type=int, help="Filtra por um ano específico, ex: 2025")
+    p_analisar.add_argument("--ano", type=int, help="Filtra um ano específico")
+    p_analisar.add_argument("--mes", type=int, help="Filtra um mês específico")
+    p_analisar.add_argument("--trimestre", type=int, help="Filtra um trimestre partindo do mês X")
+    p_analisar.add_argument("--semestre", type=int, help="Filtra um semestre partindo do mês X")
     p_analisar.add_argument("--inicio", type=data, help="Data inicial (AAAA-MM-DD)")
     p_analisar.add_argument("--fim", type=data, help="Data final (AAAA-MM-DD)")
-    p_analisar.add_argument("--dias", type=int, dest="dias",
-                             help="Filtra pelos últimos N dias")
+    p_analisar.add_argument("--dias", type=int, dest="dias", help="Filtra pelos últimos N dias")
 
     args = parser.parse_args()
     if args.comando == "coletar":

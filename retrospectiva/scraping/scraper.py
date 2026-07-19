@@ -42,6 +42,7 @@ def processar_edicao(navegador, repo, issue):
     try:
         with abrir_aba(navegador) as aba:
             aba.goto(issue['url'], wait_until="domcontentloaded")
+            print("Delay de 3s antes de acessar a edição")
             aba.wait_for_timeout(DELAY_PAGINA)
             html = aba.content()
             
@@ -84,6 +85,7 @@ def processar_serie(navegador, repo, edicao, html):
         with abrir_aba(navegador) as aba:
             print(f"Acessando página da série: {href}")
             aba.goto(href, wait_until="domcontentloaded")
+            print("Delay de 3s antes de acessar a série")
             aba.wait_for_timeout(DELAY_PAGINA)
             
             nova_serie = tools.serie(aba.content(), href)

@@ -1,5 +1,5 @@
 import pandas as pd
-from datetime import timedelta
+from datetime import date, timedelta
 
 from retrospectiva.analise.periodo import Periodo
 from retrospectiva.analise.repositorio import Repositorio
@@ -49,7 +49,8 @@ class analise:
         return sorted(self.df_criadores['cargo'].unique())
     
     def top_cargo(self, cargo, top=5):
-        criadores = self.df_criadores[self.df_criadores['cargo'] == cargo]
+        cargos = [cargo] if isinstance(cargo, str) else cargo
+        criadores = self.df_criadores[self.df_criadores['cargo'].isin(cargos)]
         return criadores['criador'].value_counts().head(top)
     
     def roteirista_favorito(self, top=5):
@@ -62,7 +63,7 @@ class analise:
         return self.top_cargo('Colorist', top)
         
     def capista_favorito(self, top=5):
-        return self.top_cargo('Cover Artist', top)
+        return self.top_cargo(['Cover Artist', 'Cover Penciller'], top)
         
     def criador_favorito(self, top=10):
         criadores = self.df_criadores.drop_duplicates(subset=['edicao_id', 'criador'])
@@ -102,6 +103,13 @@ class analise:
         for i in range(1, len(datas)):
             maior = max(maior, datas[i] - datas[i - 1])
             
+        if datas:
+            fim = min(self.periodo.fim, date.today()) if self.periodo.fim else date.today()
+            maior = max(maior, fim - datas[-1])
+            
+            if self.periodo.inicio:
+                maior = max(maior, datas[0] - self.periodo.inicio)
+        
         return maior
     
     def melhor_mes(self):

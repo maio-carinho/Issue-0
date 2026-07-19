@@ -2,6 +2,8 @@ from datetime import date
 
 from retrospectiva.analise.analise import analise
 
+esse_ano = date.today().year
+
 def imprimir_relatorio(analisador: analise):
     print(f"Retrospectiva - {analisador.periodo}")
     print("-" * 50)
@@ -25,7 +27,7 @@ def imprimir_relatorio(analisador: analise):
     melhor_mes = analisador.melhor_mes()
     if melhor_mes:
         mes, total = melhor_mes
-        print(f"Melhor mês: {mes:02d}/{date.today().year} ({total} edições lidas)")
+        print(f"Melhor mês: {mes:02d}/{esse_ano} ({total} edições lidas)")
         
     edicoes, paginas = analisador.numeros()
     print(f"\nForam lidas {edicoes} edições, totalizando {paginas} páginas lidas")
