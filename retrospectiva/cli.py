@@ -3,7 +3,7 @@ from datetime import date, datetime
 
 from retrospectiva.banco.sessao import nova_sessao, criar
 from retrospectiva.analise.periodo import Periodo
-from retrospectiva.analise.analise import analise
+from retrospectiva.analise.analise import Analise
 from retrospectiva.analise.apresentacao import imprimir_relatorio
 from retrospectiva.scraping.scraper import scraper
 
@@ -15,24 +15,19 @@ def comando_coletar(args):
     scraper(limite=args.limite)
 
 def comando_analisar(args):
-    if args.ano:
-        periodo = Periodo.ano(args.ano)
-    elif args.mes:
-        periodo = Periodo.mes(args.mes)
-    elif args.trimestre:
-        periodo = Periodo.trimestre(args.trimestre)
-    elif args.semestre:
-        periodo = Periodo.semestre(args.semestre)
-    elif args.dias:
-        periodo = Periodo.dias(args.dias)
-    elif args.inicio or args.fim:
-        periodo = Periodo(args.inicio, args.fim)
-    else:
-        periodo = Periodo.tudo()
+    periodo = Periodo.partindo_de(
+        ano=args.ano,
+        mes=args.mes,
+        trimestre=args.trimestre,
+        semestre=args.semestre,
+        dias=args.dias,
+        inicio=args.inicio,
+        fim=args.fim,
+    )
         
     with nova_sessao() as sessao:
-        analisador = analise(sessao, periodo)
-        imprimir_relatorio(analisador)
+        analise = Analise(sessao, periodo)
+        imprimir_relatorio(analise)
 
 def main():
     parser = argparse.ArgumentParser(description="Retrospectiva de quadrinhos lidos")

@@ -14,6 +14,10 @@ class Periodo:
         return cls(None, None)
     
     @classmethod
+    def ano(cls, ano: int) -> "Periodo":
+        return cls(date(ano, 1, 1), date(ano, 12, 31))
+    
+    @classmethod
     def mes(cls, mes: int) -> "Periodo":
         inicio = date(esse_ano, mes, 1)
         fim = date(esse_ano, 12, 31) if mes == 12 else date(esse_ano, mes + 1, 1) - timedelta(days=1)
@@ -32,14 +36,27 @@ class Periodo:
         return cls(inicio, fim) 
     
     @classmethod
-    def ano(cls, ano: int) -> "Periodo":
-        return cls(date(ano, 1, 1), date(ano, 12, 31))
-    
-    @classmethod
     def dias(cls, dias: int, referencia: Optional[date] = None) -> "Periodo":
         referencia = referencia or date.today()
         return cls(referencia - timedelta(days=dias), referencia)
     
+    @classmethod
+    def partindo_de(cls, ano=None, mes=None, trimestre=None, semestre=None,
+                    dias=None, inicio=None, fim=None) -> "Periodo":
+        if ano:
+            return cls.ano(ano)
+        if mes:
+            return cls.mes(mes)
+        if trimestre:
+            return cls.trimestre(trimestre)
+        if semestre:
+            return cls.semestre(semestre)
+        if dias:
+            return cls.dias(dias)
+        if inicio or fim:
+            return cls(inicio, fim)
+        return cls.tudo()                                
+        
     def __str__(self):
         if self.inicio is None and self.fim is None:
             return "todo o período"

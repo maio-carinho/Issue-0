@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Retrospectiva de Quadrinhos</title>
+</head>
+<body>
+    {% if erro %}
+    <p><strong>{{ erro }}</strong></p>
+    {% endif %}
+
+    <form method="get" action="/">
+        <fieldset>
+            <legend>Filtrar por período</legend>
+
+            <label>Ano: <input type="number" name="ano"
+                value="{{ request.query_params.get('ano', '') }}">
+            <br>
+            </label>
+
+            <label>Mes (desse ano): <input type="number" name="mes"
+                value="{{ request.query_params.get('mes', '') }}">
+            <br>
+            </label>
+
+            <label>Trimestre (partindo do mês): <input type="number" name="trimestre"
+                value="{{ request.query_params.get('trimestre', '') }}">
+            <br>
+            </label>
+
+            <label>Semestre: <input type="number" name="semestre"
+                value="{{ request.query_params.get('semestre', '') }}">
+            <br>
+            </label>
+
+            <label>Últimos dias: <input type="number" name="dias"
+                value="{{ request.query_params.get('dias', '') }}">
+            <br>
+            </label>
+
+            <label>Início: <input type="date" name="inicio"
+                value="{{ request.query_params.get('inicio', '') }}">
+            </label>
+            <label>Fim: <input type="date" name="fim"
+                value="{{ request.query_params.get('fim', '') }}">
+            </label>
+
+            <br><br>
+            <button type="submit">Analisar</button>
+            <a href="/">Ver tudo</a>
+        </fieldset>
+    </form>
+
+    {% if not erro %}
+    <h1>Retrospectiva — {{ periodo }}</h1>
+
+    <h2>Roteirista favorito</h2>
+    <ul>
+        {% for nome, contagem in roteiristas.items() %}
+        <li>{{ nome }} — {{ contagem }} edições</li>
+        {% else %}
+        <li>(sem dados nesse período)</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Artista favorito</h2>
+    <ul>
+        {% for nome, contagem in artistas.items() %}
+        <li>{{ nome }} — {{ contagem }} edições</li>
+        {% else %}
+        <li>(sem dados nesse período)</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Editora favorita</h2>
+    <ul>
+        {% for nome, contagem in editoras.items() %}
+        <li>{{ nome }} — {{ contagem }} edições</li>
+        {% else %}
+        <li>(sem dados nesse período)</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Números</h2>
+    <p>Foram lidas {{numeros[0]}} edições</p>
+    <p>{{numeros[1]}} páginas</p>
+
+    {% endif %}
+</body>
+</html>

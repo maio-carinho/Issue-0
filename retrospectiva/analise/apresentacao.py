@@ -1,10 +1,10 @@
 from datetime import date
 
-from retrospectiva.analise.analise import analise
+from retrospectiva.analise.analise import Analise
 
 esse_ano = date.today().year
 
-def imprimir_relatorio(analisador: analise):
+def imprimir_relatorio(analisador: Analise):
     print(f"Retrospectiva - {analisador.periodo}")
     print("-" * 50)
     

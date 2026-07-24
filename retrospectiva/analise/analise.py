@@ -4,7 +4,7 @@ from datetime import date, timedelta
 from retrospectiva.analise.periodo import Periodo
 from retrospectiva.analise.repositorio import Repositorio
 
-class analise:
+class Analise:
     def __init__(self, sessao, periodo: Periodo = None):
         self.periodo = periodo or Periodo.tudo()
         self.repo = Repositorio(sessao, self.periodo)
