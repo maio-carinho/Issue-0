@@ -1,8 +1,15 @@
 from dataclasses import dataclass
 from datetime import date, timedelta
 from typing import Optional
+from retrospectiva.web.textos import INICIO_ESTACAO
 
 esse_ano = date.today().year
+
+def _fim_periodo(ano: int, inicio: int, meses: int) -> date:
+    seguinte = inicio + meses
+    ano_final = ano + (seguinte - 1) // 12
+    mes_final = (seguinte - 1) % 12 + 1
+    return date(ano_final, mes_final, 1) - timedelta(days=1)
 
 @dataclass(frozen=True)
 class Periodo:
@@ -19,21 +26,22 @@ class Periodo:
     
     @classmethod
     def mes(cls, mes: int) -> "Periodo":
-        inicio = date(esse_ano, mes, 1)
-        fim = date(esse_ano, 12, 31) if mes == 12 else date(esse_ano, mes + 1, 1) - timedelta(days=1)
-        return cls(inicio, fim)
+        ano = date.today().year
+        return cls(date(ano, mes, 1), _fim_periodo(ano, mes, 1))
     
     @classmethod
     def trimestre(cls, mes: int) -> "Periodo":
-        inicio = date(esse_ano, mes, 1)
-        fim = date(esse_ano, 12, 31) if mes == 12 else date(esse_ano, mes + 3, 1) - timedelta(days=1)
-        return cls(inicio, fim)
+        ano = date.today().year
+        return cls(date(ano, mes, 1), _fim_periodo(ano, mes, 3))
     
     @classmethod
     def semestre(cls, mes: int) -> "Periodo":
-        inicio = date(esse_ano, mes, 1)
-        fim = date(esse_ano, 12, 31) if mes == 12 else date(esse_ano, mes + 6, 1) - timedelta(days=1)
-        return cls(inicio, fim) 
+        ano = date.today().year
+        return cls(date(ano, mes, 1), _fim_periodo(ano, mes, 6))
+    
+    @classmethod
+    def estacao(cls, nome: str) -> "Periodo":
+        return cls.trimestre(INICIO_ESTACAO[nome])
     
     @classmethod
     def dias(cls, dias: int, referencia: Optional[date] = None) -> "Periodo":
@@ -42,7 +50,7 @@ class Periodo:
     
     @classmethod
     def partindo_de(cls, ano=None, mes=None, trimestre=None, semestre=None,
-                    dias=None, inicio=None, fim=None) -> "Periodo":
+                    estacao=None, dias=None, inicio=None, fim=None) -> "Periodo":
         if ano:
             return cls.ano(ano)
         if mes:
@@ -51,12 +59,14 @@ class Periodo:
             return cls.trimestre(trimestre)
         if semestre:
             return cls.semestre(semestre)
+        if estacao:
+            return cls.estacao(estacao)
         if dias:
             return cls.dias(dias)
         if inicio or fim:
             return cls(inicio, fim)
-        return cls.tudo()                                
-        
+        return cls.tudo() 
+    
     def __str__(self):
         if self.inicio is None and self.fim is None:
             return "todo o período"

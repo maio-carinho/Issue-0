@@ -11,7 +11,7 @@ def scraper(limite=None):
         repo = Repositorio(sessao)
         with abrir_navegador() as navegador:
             aba = navegador.pages[0] if navegador.pages else navegador.new_page()
-            aba.goto(URL_PERFIL)
+            aba.goto(URL_PERFIL, wait_until="domcontentloaded")
             print("Delay de 10s antes de acessar o site")
             aba.wait_for_timeout(DELAY_INICIO)
             scroll(aba)

@@ -5,53 +5,86 @@
     <title>Retrospectiva de Quadrinhos</title>
 </head>
 <body>
+    <header style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <h1>Edição #0</h1>
+            <p>Sua retrospectiva de quadrinhos lidos no League of Comic Geeks</p>
+        </div>
+        <a href="/?ano={{ ano_atual }}">
+            <button type="button">Gerar retrospectiva</button>
+        </a>
+    </header>
+
     {% if erro %}
-    <p><strong>{{ erro }}</strong></p>
+    <p style="color: red;"><strong>{{ erro }}</strong></p>
     {% endif %}
 
-    <form method="get" action="/">
+    {% if confirmacao %}
+    <section>
+        <p>{{ confirmacao }}</p>
+        <form method="get" action="/">
+            <input type="hidden" name="ano" value="{{ params.ano }}">
+            <input type="hidden" name="mes" value="{{ params.mes }}">
+            <input type="hidden" name="trimestre" value="{{ params.trimestre }}">
+            <input type="hidden" name="semestre" value="{{ params.semestre }}">
+            <input type="hidden" name="estacao" value="{{ params.estacao }}">
+            <input type="hidden" name="dias" value="{{ params.dias }}">
+            <input type="hidden" name="inicio" value="{{ params.inicio }}">
+            <input type="hidden" name="fim" value="{{ params.fim }}">
+            <input type="hidden" name="confirmado" value="1">
+            <button type="submit">Confirmar</button>
+        </form>
+        <a href="/">Cancelar</a>
+    </section>
+    {% endif %}
+
+    {% if not erro and not confirmacao %}
+    <h2>Gere retrospetivas em outros períodos</h2>
+
+    <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
         <fieldset>
-            <legend>Filtrar por período</legend>
-
-            <label>Ano: <input type="number" name="ano"
-                value="{{ request.query_params.get('ano', '') }}">
-            <br>
-            </label>
-
-            <label>Mes (desse ano): <input type="number" name="mes"
-                value="{{ request.query_params.get('mes', '') }}">
-            <br>
-            </label>
-
-            <label>Trimestre (partindo do mês): <input type="number" name="trimestre"
-                value="{{ request.query_params.get('trimestre', '') }}">
-            <br>
-            </label>
-
-            <label>Semestre: <input type="number" name="semestre"
-                value="{{ request.query_params.get('semestre', '') }}">
-            <br>
-            </label>
-
-            <label>Últimos dias: <input type="number" name="dias"
-                value="{{ request.query_params.get('dias', '') }}">
-            <br>
-            </label>
-
-            <label>Início: <input type="date" name="inicio"
-                value="{{ request.query_params.get('inicio', '') }}">
-            </label>
-            <label>Fim: <input type="date" name="fim"
-                value="{{ request.query_params.get('fim', '') }}">
-            </label>
-
-            <br><br>
-            <button type="submit">Analisar</button>
-            <a href="/">Ver tudo</a>
+            <legend>Mês</legend>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem;">
+                {% for numero in range(1, 13) %}
+                <a href="/?mes={{ numero }}"><button type="button">{{ numero }}</button></a>
+                {% endfor %}
+            </div>
         </fieldset>
-    </form>
 
-    {% if not erro %}
+        <fieldset>
+            <legend>Estação</legend>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem;">
+                <a href="/?estacao=verao"><button type="button">Verão</button></a>
+                <a href="/?estacao=outono"><button type="button">Outono</button></a>
+                <a href="/?estacao=inverno"><button type="button">Inverno</button></a>
+                <a href="/?estacao=primavera"><button type="button">Primavera</button></a>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Semestre</legend>
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                <a href="/?semestre=1"><button type="button">1 Semestre</button></a>
+                <a href="/?semestre=2"><button type="button">2 Semestre</button></a>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Dias específicos</legend>
+            <form method="get" action="/">
+                <label>Início: <input type="date" name="inicio"></label>
+                <br>
+                <label>Fim: <input type="date" name="fim"></label>
+                <br><br>
+                <label>Últimos N dias: <input type="number" name="dias"></label>
+                <br><br>
+                <button type="submit">Selecionar</button>
+            </form>
+        </fieldset>
+    </div>
+    {% endif %}
+
+    {% if periodo %}
     <h1>Retrospectiva — {{ periodo }}</h1>
 
     <h2>Roteirista favorito</h2>
@@ -82,9 +115,8 @@
     </ul>
 
     <h2>Números</h2>
-    <p>Foram lidas {{numeros[0]}} edições</p>
-    <p>{{numeros[1]}} páginas</p>
-
+    <p>Foram lidas {{ numeros[0] }} edições</p>
+    <p>{{ numeros[1] }} páginas</p>
     {% endif %}
 </body>
 </html>

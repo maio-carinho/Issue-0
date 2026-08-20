@@ -1,5 +1,5 @@
 import argparse
-from datetime import date, datetime
+from datetime import datetime
 
 from retrospectiva.banco.sessao import nova_sessao, criar
 from retrospectiva.analise.periodo import Periodo
