@@ -1,6 +1,7 @@
 from datetime import date
 from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from retrospectiva.banco.sessao import nova_sessao
@@ -9,6 +10,7 @@ from retrospectiva.analise.analise import Analise
 from retrospectiva.web.textos import NOMES_MES, NOMES_ESTACAO, INICIO_SEMESTRE
 
 app = FastAPI()
+app.mount("/static", StaticFiles(directory="retrospectiva/web/static"), name="static")
 templates = Jinja2Templates(directory="retrospectiva/web/templates")
 
 def _inteiro(texto: str):
@@ -44,6 +46,18 @@ def _mensagem(ano, mes, trimestre, semestre, estacao, dias, inicio, fim):
         return f"Você deseja analisar do dia {inicio} até o dia {fim}?"
     return None
 
+def _parametros(ano, mes, trimestre, semestre, estacao, dias, inicio, fim):
+    return {
+        "ano": _inteiro(ano),
+        "mes": _inteiro(mes),
+        "trimestre": _inteiro(trimestre),
+        "semestre": _inteiro(semestre),
+        "estacao": _estacao(estacao),
+        "dias": _inteiro(dias),
+        "inicio": _data(inicio),
+        "fim": _data(fim)
+    }
+
 @app.get("/", response_class=HTMLResponse)
 def pagina_inicial(
         request: Request,
@@ -58,55 +72,54 @@ def pagina_inicial(
         confirmado: str = ""
     ):
     
-    hano=_inteiro(ano)
-    hmes=_inteiro(mes)
-    htrimestre=_inteiro(trimestre)
-    hsemestre=_inteiro(semestre)
-    hestacao = _estacao(estacao)
-    hdias=_inteiro(dias)
-    hinicio=_data(inicio)
-    hfim=_data(fim)
-
-    ano_atual = date.today().year
+    valores = _parametros(ano, mes, trimestre, semestre, estacao, dias, inicio, fim)
+    algo_preenchido = _preenchidos(**valores)
     
-    if _preenchidos(hano, hmes, htrimestre, hsemestre, hestacao, hdias, hinicio, hfim) > 1:
-        contexto = {"request": request, "erro": "Preencha um tipo de filtro por vez", "ano_atual": ano_atual}
-        return templates.TemplateResponse(request, "index.html" , contexto)
+    contexto = {"request": request, "ano_atual": date.today().year}
     
-    algo_preenchido = _preenchidos(hano, hmes, htrimestre, hsemestre,
-                                   hestacao, hdias, hinicio, hfim) == 1
-    
-    if algo_preenchido and confirmado != "1":
-        mensagem = _mensagem(hano, hmes, htrimestre, hsemestre,
-                             hestacao, hdias, hinicio, hfim)
-        contexto = {
-            "request": request,
-            "confirmacao": mensagem,
-            "ano_atual": ano_atual,
-            "params": {
-                "ano": ano, "mes": mes, "trimestre": trimestre, "semestre": semestre,
-                "estacao": estacao, "dias": dias, "inicio": inicio, "fim": fim,
-            }
+    if algo_preenchido > 1:
+        contexto["erro"] = "Só preencha um filtro por vez"
+    elif algo_preenchido == 1:
+        contexto["confirmacao"] = _mensagem(**valores)
+        contexto["params"] = {
+            "ano": ano, "mes": mes, "trimestre": trimestre, "semestre": semestre,
+            "estacao": estacao, "dias": dias, "inicio": inicio, "fim": fim
         }
-        return templates.TemplateResponse(request, "index.html", contexto)
+
+    return templates.TemplateResponse(request, "index.html", contexto)
+
+@app.get("/resultado", response_class=HTMLResponse)    
+def pagina_resultado(
+    request: Request,
+    ano: str = "",
+    mes: str = "",
+    trimestre: str = "",
+    semestre: str = "",
+    estacao: str = "",
+    dias: str = "",
+    inicio: str = "",
+    fim: str = "",
+):
+    valores = _parametros(ano, mes, trimestre, semestre, estacao, dias, inicio, fim)
+ 
+    if _preenchidos(**valores) > 1:
+        return RedirectResponse(url="/")
+ 
+    hsemestre = valores.pop("semestre")
+    hsemestre_mes = INICIO_SEMESTRE.get(hsemestre) if hsemestre else None
     
-    hsemestre_inicio = INICIO_SEMESTRE.get(hsemestre) if (hsemestre) else None
-    
-    periodo = Periodo.partindo_de(
-        ano=hano, mes=hmes, trimestre=htrimestre, semestre=hsemestre_inicio,
-        estacao=hestacao, dias=hdias, inicio=hinicio, fim=hfim
-    )
+    periodo = Periodo.partindo_de(semestre=hsemestre_mes, **valores)
     
     with nova_sessao() as sessao:
         analise = Analise(sessao, periodo)
-        
+ 
         contexto = {
             "request": request,
             "periodo": str(analise.periodo),
             "roteiristas": analise.roteirista_favorito(),
             "artistas": analise.artista_favorito(),
             "editoras": analise.editora_favorito(),
-            "numeros": analise.numeros()
+            "numeros": analise.numeros(),
         }
         
-        return templates.TemplateResponse(request, "index.html", contexto)
+        return templates.TemplateResponse(request, "resultado.html", contexto)

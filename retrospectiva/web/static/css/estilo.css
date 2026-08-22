@@ -1,0 +1,80 @@
+@font-face {
+    font-family: 'Mardo';
+    src: url('/static/fonts/Mardo.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Courbe Sans';
+    src: url('/static/fonts/CourbeSans.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.titulo {
+    font-family: 'Mardo', sans-serif;
+    font-size: 60px;
+    letter-spacing: 8%;
+}
+
+button {
+    font-family: 'Courbe Sans', sans-serif;
+}
+
+.cabecalho {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.subtitulo {
+    font-family: 'Allerta', sans-serif;
+}
+
+.pergunta {
+    font-family: 'Allerta', sans-serif;
+}
+
+.erro {
+    color: #FF3333;
+}
+
+.blocos {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.bloco-meses {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+}
+
+.bloco-estacoes {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+}
+
+.grade-semestres {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.confirmacao {
+    margin-top: 1.5rem;
+}
+
+.confirmacao-acoes {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.form-inline {
+    font-family: 'Allerta', sans-serif;
+    margin: 0;
+}

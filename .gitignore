@@ -1,5 +1,5 @@
 *.db
-comandos.txt
+*.txt
 
 /.venv/
 /perfil/

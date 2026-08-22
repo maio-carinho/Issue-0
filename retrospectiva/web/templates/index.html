@@ -3,48 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <title>Retrospectiva de Quadrinhos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Allerta&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/estilo.css">
 </head>
 <body>
     <header style="display: flex; justify-content: space-between; align-items: center;">
         <div>
-            <h1>Edição #0</h1>
-            <p>Sua retrospectiva de quadrinhos lidos no League of Comic Geeks</p>
+            <h1 class="titulo">EDIÇÃO #0</h1>
+            <p class="subtitulo">Sua retrospectiva de quadrinhos lidos no League of Comic Geeks</p>
         </div>
-        <a href="/?ano={{ ano_atual }}">
+        <a href="/resultado?ano={{ ano_atual }}">
             <button type="button">Gerar retrospectiva</button>
         </a>
     </header>
 
     {% if erro %}
-    <p style="color: red;"><strong>{{ erro }}</strong></p>
+    <p class"erro"><strong>{{ erro }}</strong></p>
     {% endif %}
 
-    {% if confirmacao %}
-    <section>
-        <p>{{ confirmacao }}</p>
-        <form method="get" action="/">
-            <input type="hidden" name="ano" value="{{ params.ano }}">
-            <input type="hidden" name="mes" value="{{ params.mes }}">
-            <input type="hidden" name="trimestre" value="{{ params.trimestre }}">
-            <input type="hidden" name="semestre" value="{{ params.semestre }}">
-            <input type="hidden" name="estacao" value="{{ params.estacao }}">
-            <input type="hidden" name="dias" value="{{ params.dias }}">
-            <input type="hidden" name="inicio" value="{{ params.inicio }}">
-            <input type="hidden" name="fim" value="{{ params.fim }}">
-            <input type="hidden" name="confirmado" value="1">
-            <button type="submit">Confirmar</button>
-        </form>
-        <a href="/">Cancelar</a>
-    </section>
-    {% endif %}
-
-    {% if not erro and not confirmacao %}
+    {% if not erro %}
     <h2>Gere retrospetivas em outros períodos</h2>
 
-    <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+    <div class="blocos">
         <fieldset>
             <legend>Mês</legend>
-            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem;">
+            <div class="bloco-meses">
                 {% for numero in range(1, 13) %}
                 <a href="/?mes={{ numero }}"><button type="button">{{ numero }}</button></a>
                 {% endfor %}
@@ -53,7 +38,7 @@
 
         <fieldset>
             <legend>Estação</legend>
-            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem;">
+            <div class="bloco-estacoes">
                 <a href="/?estacao=verao"><button type="button">Verão</button></a>
                 <a href="/?estacao=outono"><button type="button">Outono</button></a>
                 <a href="/?estacao=inverno"><button type="button">Inverno</button></a>
@@ -63,7 +48,7 @@
 
         <fieldset>
             <legend>Semestre</legend>
-            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <div class="bloco-semestres">
                 <a href="/?semestre=1"><button type="button">1 Semestre</button></a>
                 <a href="/?semestre=2"><button type="button">2 Semestre</button></a>
             </div>
@@ -82,41 +67,27 @@
             </form>
         </fieldset>
     </div>
+
+    {% if confirmacao %}
+    <section class="confirmacao">
+        <p class="pergunta">{{ confirmacao }}</p>
+        <div class="confirmacao-acoes">
+            <a href="/"><button type="button">Cancelar</button></a>
+            <form method="get" action="/resultado" class="form-inline">
+                <input type="hidden" name="ano" value="{{ params.ano }}">
+                <input type="hidden" name="mes" value="{{ params.mes }}">
+                <input type="hidden" name="trimestre" value="{{ params.trimestre }}">
+                <input type="hidden" name="semestre" value="{{ params.semestre }}">
+                <input type="hidden" name="estacao" value="{{ params.estacao }}">
+                <input type="hidden" name="dias" value="{{ params.dias }}">
+                <input type="hidden" name="inicio" value="{{ params.inicio }}">
+                <input type="hidden" name="fim" value="{{ params.fim }}">
+                <button type="submit">Confirmar</button>
+            </form>
+        </div>
+    </section>
     {% endif %}
 
-    {% if periodo %}
-    <h1>Retrospectiva — {{ periodo }}</h1>
-
-    <h2>Roteirista favorito</h2>
-    <ul>
-        {% for nome, contagem in roteiristas.items() %}
-        <li>{{ nome }} — {{ contagem }} edições</li>
-        {% else %}
-        <li>(sem dados nesse período)</li>
-        {% endfor %}
-    </ul>
-
-    <h2>Artista favorito</h2>
-    <ul>
-        {% for nome, contagem in artistas.items() %}
-        <li>{{ nome }} — {{ contagem }} edições</li>
-        {% else %}
-        <li>(sem dados nesse período)</li>
-        {% endfor %}
-    </ul>
-
-    <h2>Editora favorita</h2>
-    <ul>
-        {% for nome, contagem in editoras.items() %}
-        <li>{{ nome }} — {{ contagem }} edições</li>
-        {% else %}
-        <li>(sem dados nesse período)</li>
-        {% endfor %}
-    </ul>
-
-    <h2>Números</h2>
-    <p>Foram lidas {{ numeros[0] }} edições</p>
-    <p>{{ numeros[1] }} páginas</p>
     {% endif %}
 </body>
 </html>

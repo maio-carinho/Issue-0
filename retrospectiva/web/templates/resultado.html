@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Retrospectiva de Quadrinhos — Resultado</title>
+
+    <link rel="stylesheet" href="/static/css/estilo.css">
+</head>
+<body>
+    <header class="cabecalho">
+        <a href="/" aria-label="Voltar">
+            <button type="button">&larr;</button>
+        </a>
+        <button type="button">Compartilhar</button>
+    </header>
+
+    <h1 class="titulo">RETROSPETIVA — {{ periodo }}</h1>
+
+    <h2>Roteirista favorito</h2>
+    <ul>
+        {% for nome, contagem in roteiristas.items() %}
+        <li>{{ nome }} — {{ contagem }} edições</li>
+        {% else %}
+        <li>(sem dados nesse período)</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Artista favorito</h2>
+    <ul>
+        {% for nome, contagem in artistas.items() %}
+        <li>{{ nome }} — {{ contagem }} edições</li>
+        {% else %}
+        <li>(sem dados nesse período)</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Editora favorita</h2>
+    <ul>
+        {% for nome, contagem in editoras.items() %}
+        <li>{{ nome }} — {{ contagem }} edições</li>
+        {% else %}
+        <li>(sem dados nesse período)</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Números</h2>
+    <p>Foram lidas {{ numeros[0] }} edições</p>
+    <p>{{ numeros[1] }} páginas</p>
+</body>
+</html>
