@@ -6,7 +6,7 @@ from retrospectiva.banco.repositorio import Repositorio
 from retrospectiva.scraping.navegador import abrir_navegador, abrir_aba
 from retrospectiva.scraping import tools
 
-def scraper(limite=None):
+def scraper(limite=None, margem=None):
     with nova_sessao() as sessao:
         repo = Repositorio(sessao)
         with abrir_navegador() as navegador:
@@ -14,7 +14,7 @@ def scraper(limite=None):
             aba.goto(URL_PERFIL, wait_until="domcontentloaded")
             print("Delay de 10s antes de acessar o site")
             aba.wait_for_timeout(DELAY_INICIO)
-            scroll(aba)
+            scroll(aba, margem)
             
             todos = tools.historico(aba.content())
             ids = repo.ids()
@@ -28,9 +28,16 @@ def scraper(limite=None):
                 print(f"{indice} de {len(links)} - url: {issue['url']}")
                 processar_edicao(navegador, repo, issue)
             
-def scroll(aba):
+def scroll(aba, margem=None):
     tamanho = aba.evaluate("document.body.scrollHeight")
     while True:
+        if margem is not None:
+            carregados = aba.evaluate(
+                "document.querySelectorAll('ul.latest-activity-list-grid li.grid-item').length"
+            )
+            if carregados >= margem:
+                print(f"Atingiu {carregados} itens carregados, parando de rolar")
+                break
         aba.evaluate("window.scrollTo(0, document.body.scrollHeight)")
         aba.wait_for_timeout(DELAY_SCROLL)
         altura = aba.evaluate("document.body.scrollHeight")

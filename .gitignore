@@ -1,5 +1,6 @@
 *.db
-*.txt
+comandos.txt
+porta-8000.txt
 
 /.venv/
 /perfil/

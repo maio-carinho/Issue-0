@@ -1,8 +1,8 @@
 NOMES_ESTACAO = {
-    "verao": "verão",
-    "outono": "outono",
-    "inverno": "inverno",
-    "primavera": "primavera",
+    "verao": "Verão",
+    "outono": "Outono",
+    "inverno": "Inverno",
+    "primavera": "Primavera",
 }
 
 INICIO_ESTACAO = {
@@ -13,10 +13,10 @@ INICIO_ESTACAO = {
 }
 
 NOMES_MES = {
-    1: "janeiro", 2: "fevereiro", 3: "março",
-    4: "abril", 5: "maio", 6: "junho",
-    7: "julho", 8: "agosto", 9: "setembro",
-    10: "outubro", 11: "novembro", 12: "dezembro",
+    1: "Janeiro", 2: "Fevereiro", 3: "Março",
+    4: "Abril", 5: "Maio", 6: "Junho",
+    7: "Julho", 8: "Agosto", 9: "Setembro",
+    10: "Outubro", 11: "Novembro", 12: "Dezembro",
 }
 
 INICIO_SEMESTRE = {1: 1, 2: 7}

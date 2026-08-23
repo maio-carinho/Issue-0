@@ -75,7 +75,7 @@ def pagina_inicial(
     valores = _parametros(ano, mes, trimestre, semestre, estacao, dias, inicio, fim)
     algo_preenchido = _preenchidos(**valores)
     
-    contexto = {"request": request, "ano_atual": date.today().year}
+    contexto = {"request": request, "ano_atual": date.today().year, "nomes_mes": NOMES_MES}
     
     if algo_preenchido > 1:
         contexto["erro"] = "Só preencha um filtro por vez"

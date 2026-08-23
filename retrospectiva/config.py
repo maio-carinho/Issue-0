@@ -6,7 +6,8 @@ RAIZ = Path(__file__).resolve().parent.parent
 PASTA = "perfil"
 
 BASE = "https://leagueofcomicgeeks.com"
-PERFIL = "valadyne"
+# PERFIL = "valadyne"
+PERFIL = "moonryker"
 URL_PERFIL = f"{BASE}/profile/{PERFIL}/reading"
 
 MESES = {

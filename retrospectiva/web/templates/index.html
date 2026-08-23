@@ -9,14 +9,12 @@
     <link rel="stylesheet" href="/static/css/estilo.css">
 </head>
 <body>
-    <header style="display: flex; justify-content: space-between; align-items: center;">
+    <header class="cabecalho">
         <div>
             <h1 class="titulo">EDIÇÃO #0</h1>
             <p class="subtitulo">Sua retrospectiva de quadrinhos lidos no League of Comic Geeks</p>
         </div>
-        <a href="/resultado?ano={{ ano_atual }}">
-            <button type="button">Gerar retrospectiva</button>
-        </a>
+        <a class="botao" href="/resultado?ano={{ ano_atual }}">Gerar retrospectiva</a>
     </header>
 
     {% if erro %}
@@ -31,7 +29,9 @@
             <legend>Mês</legend>
             <div class="bloco-meses">
                 {% for numero in range(1, 13) %}
-                <a href="/?mes={{ numero }}"><button type="button">{{ numero }}</button></a>
+                <a class="botao" href="/?mes={{ numero }}" title="{{ nomes_mes[numero] }}">
+                    {{ numero }}
+                </a>
                 {% endfor %}
             </div>
         </fieldset>
@@ -39,18 +39,18 @@
         <fieldset>
             <legend>Estação</legend>
             <div class="bloco-estacoes">
-                <a href="/?estacao=verao"><button type="button">Verão</button></a>
-                <a href="/?estacao=outono"><button type="button">Outono</button></a>
-                <a href="/?estacao=inverno"><button type="button">Inverno</button></a>
-                <a href="/?estacao=primavera"><button type="button">Primavera</button></a>
+                <a class="botao botao-icone" title="Verão" href="/?estacao=verao">☀️</a>
+                <a class="botao botao-icone" title="Outono" href="/?estacao=outono">🍂</a>
+                <a class="botao botao-icone" title="Inverno" href="/?estacao=inverno">❄️</a>
+                <a class="botao botao-icone" title="Primavera" href="/?estacao=primavera">🌸</a>
             </div>
         </fieldset>
 
         <fieldset>
             <legend>Semestre</legend>
             <div class="bloco-semestres">
-                <a href="/?semestre=1"><button type="button">1 Semestre</button></a>
-                <a href="/?semestre=2"><button type="button">2 Semestre</button></a>
+                <a class="botao" href="/?semestre=1">1° Semestre</a>
+                <a class="botao" href="/?semestre=2">2° Semestre</a>
             </div>
         </fieldset>
 
@@ -63,7 +63,7 @@
                 <br><br>
                 <label>Últimos N dias: <input type="number" name="dias"></label>
                 <br><br>
-                <button type="submit">Selecionar</button>
+                <button type="submit" class="botao">Selecionar</button>
             </form>
         </fieldset>
     </div>
@@ -72,7 +72,7 @@
     <section class="confirmacao">
         <p class="pergunta">{{ confirmacao }}</p>
         <div class="confirmacao-acoes">
-            <a href="/"><button type="button">Cancelar</button></a>
+            <a class="botao" href="/">Cancelar</a>
             <form method="get" action="/resultado" class="form-inline">
                 <input type="hidden" name="ano" value="{{ params.ano }}">
                 <input type="hidden" name="mes" value="{{ params.mes }}">
@@ -82,7 +82,7 @@
                 <input type="hidden" name="dias" value="{{ params.dias }}">
                 <input type="hidden" name="inicio" value="{{ params.inicio }}">
                 <input type="hidden" name="fim" value="{{ params.fim }}">
-                <button type="submit">Confirmar</button>
+                <button type="submit" class="botao">Confirmar</button>
             </form>
         </div>
     </section>

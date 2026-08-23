@@ -12,7 +12,7 @@ def data(texto):
 
 def comando_coletar(args):
     criar()
-    scraper(limite=args.limite)
+    scraper(limite=args.limite, margem=args.margem)
 
 def comando_analisar(args):
     periodo = Periodo.partindo_de(
@@ -34,7 +34,8 @@ def main():
     subparsers = parser.add_subparsers(dest="comando", required=True)
 
     p_coletar = subparsers.add_parser("coletar", help="Roda o scraper e atualiza o banco local")
-    p_coletar.add_argument("--limite", type=int, help="Limita até N° edições novas processasdas")
+    p_coletar.add_argument("--limite", type=int, help="Limita até N edições novas processasdas")
+    p_coletar.add_argument("--margem", type=int, help="Limita até N edições carregadas")
 
     p_analisar = subparsers.add_parser("analisar", help="Gera a retrospectiva")
     p_analisar.add_argument("--ano", type=int, help="Filtra um ano específico")
