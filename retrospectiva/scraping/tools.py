@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 from retrospectiva.config import (
     BASE, PADRAO_ID_EDICAO, PADRAO_ID_SERIE, PADRAO_ID_CRIADOR, PADRAO_ID_PERSONAGEM
 )
-from retrospectiva.banco.banco import  Serie, Edicao, Criador, Personagem, Leitura
+from retrospectiva.banco.banco import Serie, Edicao, Criador, Personagem, Leitura
 
 def id_serie(url):
     m = PADRAO_ID_SERIE.search(url)
@@ -76,7 +76,10 @@ def leitura(edicao_id, data):
 def edicao(html):
     soup = BeautifulSoup(html, 'html.parser')
 
-    titulo = soup.select_one('.page-details h1').get_text(strip=True)
+    tag_titulo = soup.select_one('.page-details h1')
+    if tag_titulo is None:
+        raise ValueError("título não encontrado (.page-details h1)")
+    titulo = tag_titulo.get_text(strip=True)
     busca = re.search(r'(#\d+|Vol\.\s*\d+|HC|TP)', titulo, re.IGNORECASE)
     numero = busca.group(1) if busca else ""
 

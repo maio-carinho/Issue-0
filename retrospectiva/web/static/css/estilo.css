@@ -1,24 +1,42 @@
+:root {
+    --cor-fundo: #0A0F15;
+    --cor-texto: #E9F2F9;
+    --cor-destaque: #62C099;
+    --cor-fundo-botao: #FB6B41;
+    --cor-texto-botao: color-mix(in srgb, var(--cor-fundo) 60%, black 40%);
+    --espessura-borda: 3px;
+    --cor-container: color-mix(in srgb, var(--cor-fundo) 90%, black 10%);
+    --cor-container-borda: color-mix(in srgb, var(--cor-destaque) 65%, black 35%);
+
+    /* Editoras */
+    --cor-dc: #007EC1;
+    --cor-marvel: #ED1D24;
+}
+
 @font-face {
     font-family: 'Mardo';
     src: url('/static/fonts/Mardo.otf') format('opentype');
-    font-weight: lighter;
-    font-style: normal;
 }
 
 @font-face {
     font-family: 'Courbe Sans';
     src: url('/static/fonts/CourbeSans.otf') format('opentype');
-    font-weight: normal;
-    font-style: normal;
+}
+
+body {
+    font-family: 'Allerta', sans-serif;
+    background-color: var(--cor-fundo);
+    color: var(--cor-texto);
+    padding: 0 3rem;
 }
 
 .botao {
     display: inline-block;
     text-decoration: none;
-    color: inherit;
+    color: var(--cor-texto-botao);
+    background-color: var(--cor-fundo-botao);
     text-align: center;
     padding: 0.5rem 1rem;
-    border: 1px solid currentColor;
     border-radius: 4px;
     cursor: pointer;
     font-family: 'Courbe Sans', sans-serif;
@@ -31,6 +49,7 @@
 .titulo {
     font-family: 'Mardo', sans-serif;
     font-size: 60px;
+    font-weight: lighter;
     letter-spacing: 0.05em;
 }
 
@@ -41,19 +60,27 @@
 }
 
 .subtitulo {
-    font-family: 'Allerta', sans-serif;
+    /*font-family: 'Allerta', sans-serif;*/
 }
 
 .pergunta {
-    font-family: 'Allerta', sans-serif;
+    /*font-family: 'Allerta', sans-serif;*/
 }
 
-.erro {
-    color: #FF3333;
+fieldset {
+    background-color: var(--cor-container);
+    border: var(--espessura-borda) solid var(--cor-container-borda);
+    border-radius: 4px;
+    padding: 1rem;
+}
+
+fieldset legend {
+    padding: 0 0.5rem;
 }
 
 .blocos {
     display: flex;
+    justify-content: center;
     gap: 2rem;
     flex-wrap: wrap;
 }
@@ -95,7 +122,10 @@
     align-items: center;
 }
 
+.erro {
+    color: var(--cor-destaque);
+}
+
 .form-inline {
-    font-family: 'Allerta', sans-serif;
     margin: 0;
 }

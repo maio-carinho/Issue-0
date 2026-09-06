@@ -1,9 +1,7 @@
 from dataclasses import dataclass
 from datetime import date, timedelta
 from typing import Optional
-from retrospectiva.web.textos import INICIO_ESTACAO
-
-esse_ano = date.today().year
+from retrospectiva.analise.constantes import INICIO_ESTACAO
 
 def _fim_periodo(ano: int, inicio: int, meses: int) -> date:
     seguinte = inicio + meses

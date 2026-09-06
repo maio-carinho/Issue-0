@@ -34,7 +34,7 @@ def main():
     subparsers = parser.add_subparsers(dest="comando", required=True)
 
     p_coletar = subparsers.add_parser("coletar", help="Roda o scraper e atualiza o banco local")
-    p_coletar.add_argument("--limite", type=int, help="Limita até N edições novas processasdas")
+    p_coletar.add_argument("--limite", type=int, help="Limita até N edições novas processadas")
     p_coletar.add_argument("--margem", type=int, help="Limita até N edições carregadas")
 
     p_analisar = subparsers.add_parser("analisar", help="Gera a retrospectiva")
@@ -44,7 +44,7 @@ def main():
     p_analisar.add_argument("--semestre", type=int, help="Filtra um semestre partindo do mês X")
     p_analisar.add_argument("--inicio", type=data, help="Data inicial (AAAA-MM-DD)")
     p_analisar.add_argument("--fim", type=data, help="Data final (AAAA-MM-DD)")
-    p_analisar.add_argument("--dias", type=int, dest="dias", help="Filtra pelos últimos N dias")
+    p_analisar.add_argument("--dias", type=int, help="Filtra pelos últimos N dias")
 
     args = parser.parse_args()
     if args.comando == "coletar":

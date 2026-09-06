@@ -1,8 +1,21 @@
 import pandas as pd
 from datetime import date, timedelta
+from typing import NamedTuple, Optional
 
 from retrospectiva.analise.periodo import Periodo
-from retrospectiva.analise.repositorio import Repositorio
+from retrospectiva.analise.frames import Repositorio
+
+class Sequencia(NamedTuple):
+    maior: int
+    atual: int
+    
+class MelhorMes(NamedTuple):
+    mes: int
+    total: int
+    
+class Numeros(NamedTuple):
+    edicoes: int
+    paginas: int
 
 class Analise:
     def __init__(self, sessao, periodo: Periodo = None):
@@ -72,17 +85,17 @@ class Analise:
     def personagem_favorito(self, top=10):
         return self.df_personagens['personagem'].value_counts().head(top)
         
-    def editora_favorito(self, top=5):
+    def editora_favorita(self, top=5):
         return self.df_classificacao['editora'].value_counts().head(top)
         
-    def era_favorito(self, top=5):
+    def era_favorita(self, top=5):
         return self.df_classificacao['era'].value_counts().head(top)
         
     def genero_favorito(self, top=5):
         explodido = self.df_classificacao['genero'].str.split(r',\s*').explode()
         return explodido.value_counts().head(top)
     
-    def maior_sequencia(self):
+    def maior_sequencia(self) -> Sequencia:
         datas = self.df_datas
         if not datas:
             return 0, 0
@@ -95,7 +108,7 @@ class Analise:
             else:
                 atual_seq = 1
                 
-        return maior_seq, atual_seq
+        return Sequencia(maior_seq, atual_seq)
         
     def maior_ressaca(self):
         datas = self.df_datas
@@ -112,16 +125,16 @@ class Analise:
         
         return maior
     
-    def melhor_mes(self):
+    def melhor_mes(self) -> Optional[MelhorMes]:
         if self.df_leituras.empty:
             return None
         
         datas = pd.to_datetime(self.df_leituras['data'])
         conta = datas.dt.to_period('M').value_counts()
         periodo = conta.index[0]
-        return periodo.month, int(conta.iloc[0]) 
+        return MelhorMes(periodo.month, int(conta.iloc[0])) 
         
-    def numeros(self):
+    def numeros(self) -> Numeros:
         edicoes = len(self.df_leituras)
         paginas = int(self.df_leituras['paginas'].sum())
-        return edicoes, paginas
+        return Numeros(edicoes, paginas)

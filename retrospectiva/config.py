@@ -6,8 +6,7 @@ RAIZ = Path(__file__).resolve().parent.parent
 PASTA = "perfil"
 
 BASE = "https://leagueofcomicgeeks.com"
-# PERFIL = "valadyne"
-PERFIL = "moonryker"
+PERFIL = "valadyne"
 URL_PERFIL = f"{BASE}/profile/{PERFIL}/reading"
 
 MESES = {
@@ -21,8 +20,8 @@ PADRAO_ID_CRIADOR = re.compile(r'/people/(\d+)')
 PADRAO_ID_PERSONAGEM = re.compile(r'/character/(\d+)')
 
 DELAY_INICIO = 10000
-DELAY_SCROLL = 2000
-DELAY_PAGINA = 3000
+DELAY_CARREGAMENTO = 8000
+DELAY_BLOCO = 2000
 
 BANCO_URL = os.environ.get(
     "BANCO_URL",

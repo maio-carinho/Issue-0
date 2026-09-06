@@ -7,7 +7,8 @@ from fastapi.templating import Jinja2Templates
 from retrospectiva.banco.sessao import nova_sessao
 from retrospectiva.analise.periodo import Periodo
 from retrospectiva.analise.analise import Analise
-from retrospectiva.web.textos import NOMES_MES, NOMES_ESTACAO, INICIO_SEMESTRE
+from retrospectiva.analise.constantes import INICIO_SEMESTRE
+from retrospectiva.web.nomes import NOMES_MES, NOMES_ESTACAO
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="retrospectiva/web/static"), name="static")
@@ -118,7 +119,7 @@ def pagina_resultado(
             "periodo": str(analise.periodo),
             "roteiristas": analise.roteirista_favorito(),
             "artistas": analise.artista_favorito(),
-            "editoras": analise.editora_favorito(),
+            "editoras": analise.editora_favorita(),
             "numeros": analise.numeros(),
         }
         

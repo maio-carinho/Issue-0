@@ -1,5 +1,7 @@
+from playwright.sync_api import TimeoutError
+
 from retrospectiva.config import (
-    URL_PERFIL, MESES, DELAY_INICIO, DELAY_SCROLL, DELAY_PAGINA
+    URL_PERFIL, MESES, DELAY_INICIO, DELAY_CARREGAMENTO, DELAY_BLOCO
 )
 from retrospectiva.banco.sessao import nova_sessao
 from retrospectiva.banco.repositorio import Repositorio
@@ -39,18 +41,34 @@ def scroll(aba, margem=None):
                 print(f"Atingiu {carregados} itens carregados, parando de rolar")
                 break
         aba.evaluate("window.scrollTo(0, document.body.scrollHeight)")
-        aba.wait_for_timeout(DELAY_SCROLL)
-        altura = aba.evaluate("document.body.scrollHeight")
-        if altura == tamanho:
+        try:
+            aba.wait_for_function(
+                "altura => document.body.scrollHeight > altura",
+                arg=tamanho,
+                timeout=DELAY_CARREGAMENTO
+            )
+        except TimeoutError:
             break
-        tamanho = altura
+        tamanho = aba.evaluate("document.body.scrollHeight")
+
+def carregar_bloco(aba, seletor):
+    for s in seletor:
+        try:
+            aba.wait_for_selector(s, timeout=DELAY_BLOCO)
+        except TimeoutError:
+            pass
 
 def processar_edicao(navegador, repo, issue):
     try:
         with abrir_aba(navegador) as aba:
             aba.goto(issue['url'], wait_until="domcontentloaded")
             print("Delay de 3s antes de acessar a edição")
-            aba.wait_for_timeout(DELAY_PAGINA)
+            aba.wait_for_selector(".page-details h1", timeout=DELAY_CARREGAMENTO)
+            carregar_bloco(aba, [
+                '[id^="creators-"], #cover-artists',
+                '[id^="characters-"]',
+                '.series-pagination a:nth-child(2)',
+            ])
             html = aba.content()
             
             nova_edicao = tools.edicao(html)
@@ -93,8 +111,8 @@ def processar_serie(navegador, repo, edicao, html):
             print(f"Acessando página da série: {href}")
             aba.goto(href, wait_until="domcontentloaded")
             print("Delay de 3s antes de acessar a série")
-            aba.wait_for_timeout(DELAY_PAGINA)
-            
+            aba.wait_for_selector(".page-details h1", timeout=DELAY_CARREGAMENTO)
+                        
             nova_serie = tools.serie(aba.content(), href)
             serie, _ = repo.lidar_serie(nova_serie)
             repo.atualizar_serie(edicao, serie.id)
